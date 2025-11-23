@@ -144,3 +144,16 @@ tests/*
 .idea/*
 
 tiktok_uploader\tiktok-signature\command.txt
+
+# TikTok Auto Uploader
+.monitor.pid
+*.log
+youtube_monitor.log
+nohup.out
+*.bak
+*.mp4
+temp_*.mp4
+scaled_*.mp4
+youtube_history.json
+temp-audio.m4a
+venv/

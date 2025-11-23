@@ -1,0 +1,23 @@
+{
+  "channels": [
+    {
+      "id": "channel_1",
+      "youtube_url": "https://www.youtube.com/@daile861",
+      "tiktok_user": "japanese.207",
+      "proxy": {
+        "enabled": true,
+        "host": "64.176.51.199",
+        "port": 46931,
+        "username": "fo7idh",
+        "password": "d2k0gm"
+      },
+      "enabled": true
+    }
+  ],
+  "settings": {
+    "check_interval": 2,
+    "min_duration": 45,
+    "max_duration": 180,
+    "target_duration": 60
+  }
+}
