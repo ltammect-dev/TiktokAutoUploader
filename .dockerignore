@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+
+# Backups
+*.bak
+*.old
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# Node
+node_modules
+npm-debug.log*
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local files
+youtube_history.json
+ProcessedVideos/*
+VideosDirPath/*
+CookiesDir/*
+!CookiesDir/empty.cookie
+
+# Scripts we don't need in container
+start.sh.old
+package.json.bak
+Procfile.bak
