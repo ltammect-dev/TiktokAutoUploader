@@ -15,10 +15,20 @@ WORKDIR /app
 # Copy all files
 COPY . .
 
-# Install dependencies
-RUN cd dashboard && npm install && npm run build
+# Install dashboard dependencies and build
+WORKDIR /app/dashboard
+RUN npm install && npm run build
+
+# Install Python dependencies
+WORKDIR /app
 RUN pip3 install --no-cache-dir -r requirements.txt
-RUN cd tiktok_uploader/tiktok-signature && npm install
+
+# Install tiktok-signature dependencies
+WORKDIR /app/tiktok_uploader/tiktok-signature
+RUN npm install
+
+# Back to app root
+WORKDIR /app
 
 # Create directories
 RUN mkdir -p VideosDirPath ProcessedVideos CookiesDir
