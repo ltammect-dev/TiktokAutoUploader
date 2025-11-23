@@ -26,9 +26,10 @@ RUN mkdir -p VideosDirPath ProcessedVideos CookiesDir
 ENV PORT=3000
 EXPOSE 3000
 
-# Make start script executable
-RUN chmod +x start.sh
+# Copy and set entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Start command - run Next.js in dashboard directory
-CMD ["sh", "-c", "python3 youtube_monitor.py > /tmp/youtube_monitor.log 2>&1 & exec npm start --prefix /app/dashboard"]
+# Start command
+CMD ["/entrypoint.sh"]
 
