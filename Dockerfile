@@ -26,5 +26,9 @@ RUN mkdir -p VideosDirPath ProcessedVideos CookiesDir
 ENV PORT=3000
 EXPOSE 3000
 
-# Start command
-CMD ["bash", "start.sh"]
+# Make start script executable
+RUN chmod +x start.sh
+
+# Start command - run Next.js in dashboard directory
+CMD ["sh", "-c", "python3 youtube_monitor.py > /tmp/youtube_monitor.log 2>&1 & exec npm start --prefix /app/dashboard"]
+
