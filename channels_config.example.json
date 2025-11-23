@@ -1,0 +1,43 @@
+{
+  "channels": [
+    {
+      "id": "channel_1",
+      "youtube_url": "https://www.youtube.com/@daile861",
+      "tiktok_user": "japanese.207",
+      "genlogin_profile": "abc123-profile-id-1",
+      "proxy": {
+        "enabled": true,
+        "host": "64.176.51.199",
+        "port": 46931,
+        "username": "fo7idh",
+        "password": "d2k0gm"
+      },
+      "enabled": true,
+      "proxyChecking": false,
+      "proxyCountry": "JP - Japan (Osaka)"
+    },
+    {
+      "id": "channel_2",
+      "youtube_url": "https://www.youtube.com/@anotherchannel",
+      "tiktok_user": "account2",
+      "genlogin_profile": "xyz789-profile-id-2",
+      "proxy": {
+        "enabled": true,
+        "host": "207.148.110.67",
+        "port": 60674,
+        "username": "zap7bq",
+        "password": "px0p6s"
+      },
+      "enabled": true,
+      "proxyChecking": false,
+      "proxyCountry": "JP - Japan (Tokyo)"
+    }
+  ],
+  "settings": {
+    "check_interval": 2,
+    "min_duration": 45,
+    "max_duration": 180,
+    "target_duration": 60,
+    "genlogin_sync_interval": 360
+  }
+}
