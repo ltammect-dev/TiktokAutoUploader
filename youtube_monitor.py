@@ -179,6 +179,8 @@ class YouTubeMonitor:
         """Scale video to 60 seconds using slow motion with progress tracking"""
         try:
             from moviepy.editor import VideoFileClip
+            import sys
+            import os
             
             print(f"  🎬 Loading video...")
             clip = VideoFileClip(input_path)
@@ -194,17 +196,29 @@ class YouTubeMonitor:
             slowed_clip = clip.fx(lambda c: c.speedx(speed_factor))
             
             print(f"  💾 Encoding video to {TARGET_DURATION}s...")
-            # Write output - use simple verbose=False, no custom logger
-            slowed_clip.write_videofile(
-                output_path,
-                codec='libx264',
-                audio_codec='aac',
-                temp_audiofile='temp-audio.m4a',
-                remove_temp=True,
-                fps=30,
-                verbose=False,
-                logger=None
-            )
+            
+            # Redirect stderr to suppress moviepy progress bar issues
+            old_stderr = sys.stderr
+            sys.stderr = open(os.devnull, 'w')
+            
+            try:
+                # Write output with minimal settings to avoid file descriptor issues
+                slowed_clip.write_videofile(
+                    output_path,
+                    codec='libx264',
+                    audio_codec='aac',
+                    temp_audiofile='temp-audio.m4a',
+                    remove_temp=True,
+                    fps=30,
+                    verbose=False,
+                    logger=None,
+                    threads=4,
+                    preset='medium'
+                )
+            finally:
+                # Restore stderr
+                sys.stderr.close()
+                sys.stderr = old_stderr
             
             clip.close()
             slowed_clip.close()

@@ -11,7 +11,24 @@
         "username": "fo7idh",
         "password": "d2k0gm"
       },
-      "enabled": true
+      "enabled": true,
+      "proxyChecking": false,
+      "proxyCountry": "JP - Japan (Osaka)"
+    },
+    {
+      "id": "channel_1763907911577",
+      "youtube_url": "https://www.youtube.com/@daile861",
+      "tiktok_user": "japanese.207",
+      "proxy": {
+        "enabled": true,
+        "host": "207.148.110.67",
+        "port": 60674,
+        "username": "zap7bq",
+        "password": "px0p6s"
+      },
+      "enabled": true,
+      "proxyChecking": false,
+      "proxyCountry": "JP - Japan (Minamishinagawa)"
     }
   ],
   "settings": {
