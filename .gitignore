@@ -157,3 +157,24 @@ scaled_*.mp4
 youtube_history.json
 temp-audio.m4a
 venv/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Railway
+.railway/
+
+# Next.js
+dashboard/.next/
+dashboard/out/
+dashboard/build/
+dashboard/node_modules/
+
+# Production
+ProcessedVideos/
+VideosDirPath/*.mp4
+
+# Keep example files
+!.env.example
