@@ -13,12 +13,8 @@ python youtube_monitor.py > youtube_monitor.log 2>&1 &
 PYTHON_PID=$!
 echo "Python Monitor started with PID: $PYTHON_PID"
 
-# Start Next.js dashboard
-echo "🎨 Starting Dashboard..."
+# Start Next.js dashboard on Railway's PORT
+echo "🎨 Starting Dashboard on port ${PORT:-3000}..."
 cd dashboard
-PORT=${PORT:-3000} npm start &
-NEXTJS_PID=$!
-echo "Dashboard started with PID: $NEXTJS_PID"
+npm start
 
-# Wait for both processes
-wait $PYTHON_PID $NEXTJS_PID
