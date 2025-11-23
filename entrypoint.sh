@@ -8,10 +8,10 @@ echo "📺 Starting Python monitor..."
 python3 /app/youtube_monitor.py > /tmp/monitor.log 2>&1 &
 echo "✓ Python PID: $!"
 
-# Start Next.js dashboard
+# Start Next.js dashboard - NO CD COMMAND
 echo "🎨 Starting Next.js dashboard..."
-cd /app/dashboard
-exec npm start
+exec npm start --prefix /app/dashboard
+
 
 
 
