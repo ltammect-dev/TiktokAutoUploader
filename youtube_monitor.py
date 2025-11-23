@@ -166,9 +166,11 @@ class YouTubeMonitor:
         
         ydl_opts = get_ydl_opts_base()
         ydl_opts.update({
-            'format': 'best[ext=mp4][height<=1080]/best[ext=mp4]/best',
+            # Updated format for YouTube Shorts - prefer mp4, fallback to any format
+            'format': 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b',
             'outtmpl': output_path,
             'progress_hooks': [progress_hook],
+            'merge_output_format': 'mp4',  # Ensure output is mp4
         })
         
         try:
