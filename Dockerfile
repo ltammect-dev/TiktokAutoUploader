@@ -12,16 +12,19 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies with longer timeout
+RUN pip3 install --upgrade pip && \
+    pip3 install --default-timeout=100 -r requirements.txt
+
 # Copy all files
 COPY . .
 
 # Install dashboard dependencies and build
 WORKDIR /app/dashboard
 RUN npm install && npm run build
-
-# Install Python dependencies
-WORKDIR /app
-RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install tiktok-signature dependencies
 WORKDIR /app/tiktok_uploader/tiktok-signature
