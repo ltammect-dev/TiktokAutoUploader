@@ -16,5 +16,5 @@ echo "Python Monitor started with PID: $PYTHON_PID"
 # Start Next.js dashboard on Railway's PORT
 echo "🎨 Starting Dashboard on port ${PORT:-3000}..."
 cd dashboard
-npm start
+PORT=${PORT:-3000} npm start
 
