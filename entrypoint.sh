@@ -1,11 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
-echo "Starting services..."
+echo "=== Starting TikTok Auto Uploader ==="
 
 # Start Python monitor in background
+echo "📺 Starting Python monitor..."
 python3 /app/youtube_monitor.py > /tmp/monitor.log 2>&1 &
+echo "✓ Python PID: $!"
 
-# Start Next.js in foreground (without using cd)
-exec npm start --prefix /app/dashboard
+# Start Next.js dashboard
+echo "🎨 Starting Next.js dashboard..."
+cd /app/dashboard
+exec npm start
+
+
 
