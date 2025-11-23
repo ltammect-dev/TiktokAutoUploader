@@ -22,11 +22,33 @@ PROCESSED_DIR = "ProcessedVideos"
 USERNAME = "japanese.207"
 CHECK_INTERVAL = 2  # Check every 2 seconds
 HISTORY_FILE = "youtube_history.json"
+YOUTUBE_COOKIES_FILE = "youtube_cookies.txt"  # Optional cookies file
 
 # Video processing settings
 MIN_DURATION = 45  # seconds
 MAX_DURATION = 180  # seconds (3 minutes - increased to accept longer videos)
 TARGET_DURATION = 60  # seconds
+
+
+def get_ydl_opts_base():
+    """Get base yt-dlp options with cookies if available"""
+    opts = {
+        'quiet': True,
+        'no_warnings': True,
+    }
+    
+    # Try to use cookies file if it exists
+    if os.path.exists(YOUTUBE_COOKIES_FILE):
+        opts['cookiefile'] = YOUTUBE_COOKIES_FILE
+        print(f"🍪 Using cookies from {YOUTUBE_COOKIES_FILE}")
+    else:
+        # Try to use browser cookies (works on local machines with browser)
+        try:
+            opts['cookiesfrombrowser'] = ('chrome',)
+        except:
+            pass  # If browser cookies don't work, continue without them
+    
+    return opts
 
 
 class YouTubeMonitor:
@@ -52,11 +74,8 @@ class YouTubeMonitor:
             return self.channel_id
             
         try:
-            ydl_opts = {
-                'quiet': True,
-                'no_warnings': True,
-                'extract_flat': True,
-            }
+            ydl_opts = get_ydl_opts_base()
+            ydl_opts['extract_flat'] = True
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(YOUTUBE_CHANNEL_URL, download=False)
@@ -71,12 +90,11 @@ class YouTubeMonitor:
         """Get latest videos directly from YouTube channel (more reliable than RSS)"""
         channel_url = f"{YOUTUBE_CHANNEL_URL}/shorts"
         
-        ydl_opts = {
-            'quiet': True,
+        ydl_opts = get_ydl_opts_base()
+        ydl_opts.update({
             'extract_flat': True,
             'playlistend': limit,
-            'no_warnings': True,
-        }
+        })
         
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -146,13 +164,12 @@ class YouTubeMonitor:
             elif d['status'] == 'finished':
                 print(f"\n  ✓ Download complete")
         
-        ydl_opts = {
+        ydl_opts = get_ydl_opts_base()
+        ydl_opts.update({
             'format': 'best[ext=mp4][height<=1080]/best[ext=mp4]/best',
             'outtmpl': output_path,
-            'quiet': True,
-            'no_warnings': True,
             'progress_hooks': [progress_hook],
-        }
+        })
         
         try:
             print(f"  📥 Starting download...")
