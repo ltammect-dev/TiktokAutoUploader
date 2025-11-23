@@ -40,7 +40,8 @@ export async function POST(request: Request) {
 
       // Start the monitor in background
       exec(
-        `cd "${projectRoot}" && source venv/bin/activate && python youtube_monitor.py > youtube_monitor.log 2>&1 &`,
+        `python3 ${projectRoot}/youtube_monitor.py > ${projectRoot}/youtube_monitor.log 2>&1 &`,
+        { cwd: projectRoot },
         (error) => {
           if (error) {
             console.error('Error starting monitor:', error);
@@ -59,7 +60,8 @@ export async function POST(request: Request) {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       exec(
-        `cd "${projectRoot}" && source venv/bin/activate && python youtube_monitor.py > youtube_monitor.log 2>&1 &`,
+        `python3 ${projectRoot}/youtube_monitor.py > ${projectRoot}/youtube_monitor.log 2>&1 &`,
+        { cwd: projectRoot },
         (error) => {
           if (error) {
             console.error('Error restarting monitor:', error);
