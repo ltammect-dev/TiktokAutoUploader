@@ -171,6 +171,9 @@ class YouTubeMonitor:
             'outtmpl': output_path,
             'progress_hooks': [progress_hook],
             'merge_output_format': 'mp4',  # Ensure output is mp4
+            'sleep_interval': 5,  # Add 5 second delay between requests
+            'max_sleep_interval': 10,  # Max random sleep up to 10 seconds
+            'sleep_interval_requests': 3,  # Add 3 second delay between API requests
         })
         
         try:
@@ -426,6 +429,11 @@ class YouTubeMonitor:
                 new_count += 1
                 if self.process_video(video):
                     processed_count += 1
+                    # Add delay after successful processing to avoid rate limiting
+                    if new_count > 1:  # If more videos to process
+                        delay = random.randint(10, 20)
+                        print(f"\n  ⏸ Waiting {delay}s before processing next video to avoid rate limiting...")
+                        time.sleep(delay)
         
         if new_count == 0:
             print("  ✓ No new videos to process")
