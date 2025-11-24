@@ -27,6 +27,8 @@ export default function Dashboard() {
   });
   const [logs, setLogs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionMessage, setActionMessage] = useState<string>('');
 
   useEffect(() => {
     fetchData();
@@ -64,6 +66,9 @@ export default function Dashboard() {
   };
 
   const handleControl = async (action: 'start' | 'stop' | 'restart') => {
+    setActionLoading(true);
+    setActionMessage('');
+    
     try {
       const res = await fetch('/api/control', {
         method: 'POST',
@@ -71,11 +76,24 @@ export default function Dashboard() {
         body: JSON.stringify({ action }),
       });
 
+      const data = await res.json();
+      
       if (res.ok) {
-        setTimeout(fetchData, 1000); // Refresh after 1 second
+        setActionMessage(`✅ ${data.message || `Monitor ${action}ed successfully`}`);
+        setTimeout(() => {
+          fetchData();
+          setActionMessage('');
+        }, 2000);
+      } else {
+        setActionMessage(`❌ ${data.error || 'Action failed'}`);
+        setTimeout(() => setActionMessage(''), 3000);
       }
     } catch (error) {
       console.error('Control action failed:', error);
+      setActionMessage(`❌ Failed to ${action} monitor`);
+      setTimeout(() => setActionMessage(''), 3000);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -127,27 +145,36 @@ export default function Dashboard() {
           </div>
 
           {/* Control Buttons */}
-          <div className="flex gap-4 mt-6">
-            <button
-              onClick={() => handleControl('start')}
-              disabled={status.running}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              Start
-            </button>
-            <button
-              onClick={() => handleControl('stop')}
-              disabled={!status.running}
-              className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              Stop
-            </button>
-            <button
-              onClick={() => handleControl('restart')}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Restart
-            </button>
+          <div className="mt-6">
+            {actionMessage && (
+              <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-200">
+                {actionMessage}
+              </div>
+            )}
+            
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleControl('start')}
+                disabled={status.running || actionLoading}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {actionLoading ? '⏳ Processing...' : 'Start'}
+              </button>
+              <button
+                onClick={() => handleControl('stop')}
+                disabled={!status.running || actionLoading}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {actionLoading ? '⏳ Processing...' : 'Stop'}
+              </button>
+              <button
+                onClick={() => handleControl('restart')}
+                disabled={actionLoading}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {actionLoading ? '⏳ Processing...' : 'Restart'}
+              </button>
+            </div>
           </div>
         </div>
 

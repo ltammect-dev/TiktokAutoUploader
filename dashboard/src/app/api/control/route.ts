@@ -19,8 +19,32 @@ export async function POST(request: Request) {
     const projectRoot = join(process.cwd(), '..');
 
     if (action === 'stop') {
-      // Kill the Python monitor process
-      await execAsync("pkill -f 'python.*youtube_monitor.py' || true");
+      // Kill the Python monitor process - try multiple patterns
+      try {
+        // Try pkill with different patterns
+        await execAsync("pkill -f 'youtube_monitor.py' || true");
+        await execAsync("pkill -f 'python.*youtube_monitor' || true");
+        await execAsync("pkill -9 -f 'youtube_monitor' || true");
+        
+        // Also try killing by checking ps directly
+        const { stdout: processes } = await execAsync(
+          "ps aux | grep youtube_monitor | grep -v grep | awk '{print $2}' || echo ''"
+        );
+        
+        if (processes.trim()) {
+          const pids = processes.trim().split('\n').filter(p => p);
+          for (const pid of pids) {
+            try {
+              await execAsync(`kill -9 ${pid} || true`);
+            } catch (e) {
+              // Ignore errors
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error stopping process:', error);
+      }
+      
       return NextResponse.json({ success: true, message: 'Monitor stopped' });
     }
 
@@ -28,7 +52,7 @@ export async function POST(request: Request) {
       // Start the Python monitor script
       // First check if it's already running
       const { stdout } = await execAsync(
-        "ps aux | grep 'python.*youtube_monitor.py' | grep -v grep || echo ''"
+        "ps aux | grep 'youtube_monitor.py' | grep -v grep || echo ''"
       );
 
       if (stdout.trim().length > 0) {
@@ -38,9 +62,13 @@ export async function POST(request: Request) {
         );
       }
 
-      // Start the monitor in background
+      // Start the monitor in background - use venv python
+      const pythonPath = join(projectRoot, 'venv', 'bin', 'python');
+      const scriptPath = join(projectRoot, 'youtube_monitor.py');
+      const logPath = join(projectRoot, 'youtube_monitor.log');
+      
       exec(
-        `python3 ${projectRoot}/youtube_monitor.py > ${projectRoot}/youtube_monitor.log 2>&1 &`,
+        `${pythonPath} ${scriptPath} > ${logPath} 2>&1 &`,
         { cwd: projectRoot },
         (error) => {
           if (error) {
@@ -54,13 +82,39 @@ export async function POST(request: Request) {
 
     if (action === 'restart') {
       // Stop then start
-      await execAsync("pkill -f 'python.*youtube_monitor.py' || true");
+      try {
+        await execAsync("pkill -f 'youtube_monitor.py' || true");
+        await execAsync("pkill -9 -f 'youtube_monitor' || true");
+        
+        // Kill by PID as backup
+        const { stdout: processes } = await execAsync(
+          "ps aux | grep youtube_monitor | grep -v grep | awk '{print $2}' || echo ''"
+        );
+        
+        if (processes.trim()) {
+          const pids = processes.trim().split('\n').filter(p => p);
+          for (const pid of pids) {
+            try {
+              await execAsync(`kill -9 ${pid} || true`);
+            } catch (e) {
+              // Ignore errors
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error stopping process:', error);
+      }
       
       // Wait a moment before restarting
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
+      // Start with venv python
+      const pythonPath = join(projectRoot, 'venv', 'bin', 'python');
+      const scriptPath = join(projectRoot, 'youtube_monitor.py');
+      const logPath = join(projectRoot, 'youtube_monitor.log');
+      
       exec(
-        `python3 ${projectRoot}/youtube_monitor.py > ${projectRoot}/youtube_monitor.log 2>&1 &`,
+        `${pythonPath} ${scriptPath} > ${logPath} 2>&1 &`,
         { cwd: projectRoot },
         (error) => {
           if (error) {

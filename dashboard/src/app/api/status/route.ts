@@ -7,9 +7,9 @@ const execAsync = promisify(exec);
 export async function GET() {
   try {
     // Check if the Python monitor script is running
-    // Look for python process running youtube_monitor.py
+    // Look for python process running youtube_monitor.py (more flexible pattern)
     const { stdout } = await execAsync(
-      "ps aux | grep 'python.*youtube_monitor.py' | grep -v grep || echo ''"
+      "ps aux | grep 'youtube_monitor.py' | grep -v grep || echo ''"
     );
 
     const isRunning = stdout.trim().length > 0;
@@ -17,10 +17,10 @@ export async function GET() {
     let uptime = null;
 
     if (isRunning) {
-      // Extract PID from ps output
-      const match = stdout.match(/\s+(\d+)\s+/);
-      if (match) {
-        pid = parseInt(match[1]);
+      // Extract PID from ps output (second column)
+      const parts = stdout.trim().split(/\s+/);
+      if (parts.length > 1) {
+        pid = parseInt(parts[1]);
       }
     }
 
