@@ -86,7 +86,7 @@ export default function Dashboard() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-              TikTok Auto Uploader Dashboard
+              TikTok Auto Uploader Dashboard - Dai Trang
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
               Monitor and manage your TikTok video uploads from YouTube
